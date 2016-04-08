@@ -1,6 +1,7 @@
 # _*_ encoding: utf-8 _*_
 # import timeit
 from timeit import default_timer as timer
+from collections import deque
 
 
 class BST(object):
@@ -99,6 +100,47 @@ class BST(object):
         return difference / abs(difference)
 
 
+    def preorder(self, node):
+        yield node.data
+        if node.get_left_child():
+            for item in self.preorder(node.left_child):
+                yield item
+        if node.get_right_child():
+            for item in self.preorder(node.right_child):
+                yield item
+
+
+    def inorder(self, node):
+        if node.left_child:
+            for item in self.inorder(node.left_child):
+                yield item
+        yield node.data
+        if node.right_child:
+            for item in self.inorder(node.right_child):
+                yield item
+
+    def post_order(self, node):
+        if node.left_child:
+            for item in self.post_order(node.left_child):
+                yield item
+        if node.right_child:
+            for item in self.post_order(node.right_child):
+                yield item
+        yield node.data
+
+    def breadth_first(self, node):
+        queue = deque((node,))
+        while queue:
+            node = queue.pop()
+            yield node.data
+            if node.left_child:
+                queue.appendleft(node.left_child)
+            if node.right_child:
+                queue.appendleft(node.right_child)
+
+
+
+
 class BSTNode(object):
     """Create an instance of a node for the binary search tree."""
 
@@ -153,3 +195,5 @@ if __name__ == '__main__':
     end1 = timer()
     worst = end1 - start1
     print('Best case: {}\nWorst case: {}'.format(best, worst))
+    # print(new_bst.preorder(new_bst.head))
+    print([x for x in new_bst.breadth_first(new_bst.head)])

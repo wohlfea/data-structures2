@@ -1,4 +1,8 @@
 # _*_ encoding: utf-8 _*_
+# import timeit
+from timeit import default_timer as timer
+
+
 class BST(object):
     """Create an instance of a binary search tree."""
 
@@ -139,6 +143,13 @@ if __name__ == '__main__':
     new_bst.insert(21)
     new_bst.insert(3)
     new_bst.insert(6)
-
+    print('Search for head value:')
+    start = timer()
     new_bst.contains(20)
+    end = timer()
+    best = end - start
+    start1 = timer()
     new_bst.contains(6)
+    end1 = timer()
+    worst = end1 - start1
+    print('Best case: {}\nWorst case: {}'.format(best, worst))

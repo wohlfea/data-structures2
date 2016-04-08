@@ -128,3 +128,17 @@ class BSTNode(object):
     def get_right_child(self):
         """Get the right child for a node."""
         return self.right_child
+
+
+if __name__ == '__main__':
+    new_bst = BST()
+    new_bst.insert(20)
+    new_bst.insert(22)
+    new_bst.insert(14)
+    new_bst.insert(17)
+    new_bst.insert(21)
+    new_bst.insert(3)
+    new_bst.insert(6)
+
+    new_bst.contains(20)
+    new_bst.contains(6)

@@ -4,7 +4,6 @@ class BST(object):
 
     def __init__(self):
         """Instantiating tree and setting marker to show if tree is empty."""
-        # self._marker = object()
         self.head = None
         self.length = 0
 
@@ -50,7 +49,6 @@ class BST(object):
             return True
         return False
 
-
     def depth(self, node=None):
         """Calculate the depth of the tree."""
         node = node or self.head
@@ -62,7 +60,6 @@ class BST(object):
         cur_depth = 1
 
         while queue:
-
             while queue[-1].get_right_child() not in visited or queue[-1].get_left_child() not in visited:
                 lc = queue[-1].get_left_child()
                 rc = queue[-1].get_right_child()
@@ -96,8 +93,6 @@ class BST(object):
         if not difference:
             return 0
         return difference / abs(difference)
-
-
 
 
 class BSTNode(object):

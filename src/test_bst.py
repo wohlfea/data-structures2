@@ -21,6 +21,22 @@ def populated_tree():
     return new_bst
 
 
+@pytest.fixture()
+def right_balance_tree():
+    """Fixture to test balance if tree is longer on left."""
+    from bst import BST
+    new_bst = BST()
+    new_bst.insert(30)
+    new_bst.insert(60)
+    new_bst.insert(40)
+    new_bst.insert(50)
+    new_bst.insert(45)
+    new_bst.insert(10)
+    new_bst.insert(8)
+    new_bst.insert(15)
+
+    return new_bst
+
 def test_new_bst():
     from bst import BST
     new_bst = BST()
@@ -86,3 +102,24 @@ def test_size_not_empty(populated_tree):
 
 def test_depth(populated_tree):
     assert populated_tree.depth() == 4
+
+
+def test_balance(populated_tree):
+    assert populated_tree.balance() == 1
+
+
+def test_balance_empty_tree():
+    from bst import BST
+    new_bst = BST()
+    assert new_bst.balance() == 0
+
+
+def test_balance_1_node():
+    from bst import BST
+    new_bst = BST()
+    new_bst.insert(10)
+    assert new_bst.balance() == 0
+
+
+def test_right_tree(right_balance_tree):
+    assert right_balance_tree.balance() == -1

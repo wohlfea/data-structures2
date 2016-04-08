@@ -51,12 +51,13 @@ class BST(object):
         return False
 
 
-    def depth(self):
+    def depth(self, node=None):
         """Calculate the depth of the tree."""
+        node = node or self.head
         if not self.length:
             return 0
         visited = [None]
-        queue = [self.head]
+        queue = [node]
         depth = 1
         cur_depth = 1
 
@@ -80,6 +81,21 @@ class BST(object):
             queue.pop()
             cur_depth -= 1
         return depth
+
+    def balance(self):
+        """Return a value based on balance of tree."""
+        right_balance = 0
+        left_balance = 0
+        if not self.head:
+            return 0
+        if self.head.right_child:
+            right_balance = self.depth(self.head.right_child)
+        if self.head.left_child:
+            left_balance = self.depth(self.head.left_child)
+        difference = left_balance - right_balance
+        if not difference:
+            return 0
+        return difference / abs(difference)
 
 
 

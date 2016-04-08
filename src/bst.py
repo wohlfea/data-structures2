@@ -139,6 +139,59 @@ class BST(object):
             if node.right_child:
                 queue.appendleft(node.right_child)
 
+    def delete_node(self, val):
+        if not self.contains(val):
+            return
+        node = self._get_node(val)
+        children = [node.left_child, node.right_child]
+        child_count = len([x for x in children if x])
+        if not child_count:
+            self._childless(node)
+        elif child_count == 1:
+            self._only_child(node, children)
+
+        else:
+            print('some bullshit')
+
+        # if 1 child
+        #  _only_child(node)
+
+    def _has_2_children(self, val):
+        # balance of node
+        # if balance <= 0:
+        # find min in right
+        # go get the min node
+        # if balance >0:
+        # find max in left
+        # go get max node
+        #
+        # swap attributes of val to min node attrs
+        pass
+
+    def _childless(self, node):
+        if node.parent.left_child is node:
+            node.parent.left_child = None
+        else:
+            node.parent.right_child = None
+        node.parent = None
+
+
+    def _only_child(self, node, children):
+        if node.left_child:
+            node.left_child.parent = node.parent
+            if node.parent.left_child is node:
+                node.parent.left_child = node.left_child
+            else:
+                node.parent.right_child = node.left_child
+
+        else:
+            node.right_child.parent = node.parent
+            if node.parent.left_child is node:
+                node.parent.left_child = node.right_child
+
+            else:
+                node.parent.right_child = node.right_child
+        node.right_child = node.parent = node.left_child = None
 
 
 

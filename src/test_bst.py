@@ -190,3 +190,28 @@ def test_breadth(populated_tree):
 
 def test_breadth2(right_balance_tree):
     assert [x for x in right_balance_tree.breadth_first(right_balance_tree.head)] == [30, 10, 60, 8, 15, 40, 50, 45]
+
+
+def test_remove_childless_node(populated_tree):
+    assert populated_tree.contains(6)
+    populated_tree.delete_node(6)
+    assert not populated_tree.contains(6)
+
+
+def test_remove_childless_node_tree_intact(populated_tree):
+    assert populated_tree.contains(6)
+    populated_tree.delete_node(6)
+    assert [x for x in populated_tree.breadth_first(populated_tree.head)] == [20, 14, 22, 3, 17, 21]
+
+
+def test_remove_1_child(populated_tree):
+    assert populated_tree.contains(3)
+    populated_tree.delete_node(3)
+    assert not populated_tree.contains(3)
+    # assert  assert [x for x in populated_tree.breadth_first(populated_tree.head)] == [20, 14, 22, 6, 17, 21]
+
+
+def test_remove_1_child_tree(populated_tree):
+    assert populated_tree.contains(3)
+    populated_tree.delete_node(3)
+    assert [x for x in populated_tree.breadth_first(populated_tree.head)] == [20, 14, 22, 6, 17, 21]

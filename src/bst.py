@@ -84,16 +84,17 @@ class BST(object):
             cur_depth -= 1
         return depth
 
-    def balance(self):
+    def balance(self, node=None):
         """Return a value based on balance of tree."""
+        node = node or self.head
         right_balance = 0
         left_balance = 0
         if not self.head:
             return 0
-        if self.head.right_child:
-            right_balance = self.depth(self.head.right_child)
+        if node.right_child:
+            right_balance = self.depth(node.right_child)
         if self.head.left_child:
-            left_balance = self.depth(self.head.left_child)
+            left_balance = self.depth(node.left_child)
         difference = left_balance - right_balance
         if not difference:
             return 0

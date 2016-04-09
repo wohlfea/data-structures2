@@ -133,6 +133,7 @@ class BST(object):
         queue = deque((node,))
         while queue:
             node = queue.pop()
+            import pdb; pdb.set_trace()
             yield node.data
             if node.left_child:
                 queue.appendleft(node.left_child)
@@ -143,30 +144,47 @@ class BST(object):
         if not self.contains(val):
             return
         node = self._get_node(val)
-        children = [node.left_child, node.right_child]
-        child_count = len([x for x in children if x])
+        child_count = len([x for x in [node.left_child, node.right_child] if x])
         if not child_count:
             self._childless(node)
         elif child_count == 1:
-            self._only_child(node, children)
-
+            self._only_child(node)
         else:
-            print('some bullshit')
+            self._has_2_children(node)
+        self.length -= 1
 
-        # if 1 child
-        #  _only_child(node)
 
-    def _has_2_children(self, val):
-        # balance of node
-        # if balance <= 0:
-        # find min in right
-        # go get the min node
-        # if balance >0:
-        # find max in left
-        # go get max node
-        #
-        # swap attributes of val to min node attrs
-        pass
+    def _has_2_children(self, node):
+        balanced = self.balance(node)
+
+        if balanced <= 0:
+            target = self._get_node(min([x for x in self.breadth_first(node.right_child)]))
+            if target.right_child:
+                target.parent.left_child = target.right_child
+                target.right_child.parent = target.parent
+            target.parent = node.parent
+            if node.parent.left_child is node:
+                node.parent.left_child = target
+            else:
+                node.parent.right_child = target
+        else:
+            target = self._get_node(max([x for x in self.breadth_first(node.left_child)]))
+            if target.left_child:
+                target.parent.right_child = target.left_child
+                target.left_child.parent = target.parent
+            target.parent = node.parent
+            if node.parent.left_child is node:
+                node.parent.left_child = target
+            else:
+                node.parent.right_child = target
+
+        node.left_child.parent = target
+        node.right_child.parent = target
+        target.left_child = node.left_child
+        target.right_child = node.right_child
+
+        node.parent = node.left_child = node.right_child = None
+
 
     def _childless(self, node):
         if node.parent.left_child is node:
@@ -176,7 +194,7 @@ class BST(object):
         node.parent = None
 
 
-    def _only_child(self, node, children):
+    def _only_child(self, node):
         if node.left_child:
             node.left_child.parent = node.parent
             if node.parent.left_child is node:

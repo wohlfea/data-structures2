@@ -63,7 +63,6 @@ class BST(object):
         queue = [node]
         depth = 1
         cur_depth = 1
-
         while queue:
             while queue[-1].get_right_child() not in visited or queue[-1].get_left_child() not in visited:
                 lc = queue[-1].get_left_child()
@@ -100,7 +99,6 @@ class BST(object):
             return 0
         return difference / abs(difference)
 
-
     def preorder(self, node):
         yield node.data
         if node.get_left_child():
@@ -109,7 +107,6 @@ class BST(object):
         if node.get_right_child():
             for item in self.preorder(node.right_child):
                 yield item
-
 
     def inorder(self, node):
         if node.left_child:
@@ -133,7 +130,6 @@ class BST(object):
         queue = deque((node,))
         while queue:
             node = queue.pop()
-            import pdb; pdb.set_trace()
             yield node.data
             if node.left_child:
                 queue.appendleft(node.left_child)
@@ -153,10 +149,8 @@ class BST(object):
             self._has_2_children(node)
         self.length -= 1
 
-
     def _has_2_children(self, node):
         balanced = self.balance(node)
-
         if balanced <= 0:
             target = self._get_node(min([x for x in self.breadth_first(node.right_child)]))
             if target.right_child:
@@ -178,13 +172,13 @@ class BST(object):
             else:
                 node.parent.right_child = target
 
-        node.left_child.parent = target
-        node.right_child.parent = target
-        target.left_child = node.left_child
-        target.right_child = node.right_child
-
+        if node.left_child is not target:
+            node.left_child.parent = target
+            target.left_child = node.left_child
+        if node.right_child is not target:
+            node.right_child.parent = target
+            target.right_child = node.right_child
         node.parent = node.left_child = node.right_child = None
-
 
     def _childless(self, node):
         if node.parent.left_child is node:
@@ -192,7 +186,6 @@ class BST(object):
         else:
             node.parent.right_child = None
         node.parent = None
-
 
     def _only_child(self, node):
         if node.left_child:
@@ -210,7 +203,6 @@ class BST(object):
             else:
                 node.parent.right_child = node.right_child
         node.right_child = node.parent = node.left_child = None
-
 
 
 class BSTNode(object):

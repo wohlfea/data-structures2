@@ -152,25 +152,16 @@ class BST(object):
     def _has_2_children(self, node):
         balanced = self.balance(node)
         if balanced <= 0:
-            print('balanced')
             target = self._get_node(min([x for x in self.breadth_first(node.right_child)]))
-            print('target is {}'.format(target.data))
-            print('target parent is {}'.format(target.parent.data))
             if target.right_child:
                 target.parent.left_child = target.right_child
                 target.right_child.parent = target.parent
-            print('node.parent is {}'.format(node.parent.data))
-            print('target.parent is being switched to that...')
             target.parent = node.parent
-            print('target.parent is now {}'.format(target.parent.data))
             if node.parent.left_child is node:
-                print('node.parent.left_child is node')
                 node.parent.left_child = target
             else:
-                print('node.parent.right_child is node')
                 node.parent.right_child = target
         else:
-            print('going into else statement')
             target = self._get_node(max([x for x in self.breadth_first(node.left_child)]))
             if target.left_child:
                 target.parent.right_child = target.left_child

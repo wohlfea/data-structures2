@@ -57,7 +57,6 @@ def another_tree():
     return new_bst
 
 
-
 def test_create_node():
     """Test that node can be created with right attributes."""
     from bst import BSTNode
@@ -242,10 +241,12 @@ def test_delete_2_children(another_tree):
     another_tree.delete_node(250)
     assert not another_tree.contains(250)
 
+
 def test_delete_2_children_tree(another_tree):
     assert another_tree.contains(250)
     another_tree.delete_node(250)
     assert [x for x in another_tree.breadth_first(another_tree.head)] == [50, 200, 150, 275, 100, 175, 240, 235, 245, 237]
+
 
 def test_delete_2_child_tree_1(right_balance_tree):
     assert right_balance_tree.contains(10)

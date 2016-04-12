@@ -156,7 +156,7 @@ def test_depth(populated_tree):
 
 def test_balance(populated_tree):
     """Test balance of left higher tree."""
-    assert populated_tree.balance() == 1
+    assert populated_tree.balance() == -1
 
 
 def test_balance_empty_tree():
@@ -176,7 +176,7 @@ def test_balance_1_node():
 
 def test_right_tree(right_balance_tree):
     """Test balance of right higher tree."""
-    assert right_balance_tree.balance() == -1
+    assert right_balance_tree.balance() == 1
 
 
 def test_preorder(populated_tree):
@@ -241,11 +241,10 @@ def test_delete_2_children(another_tree):
     another_tree.delete_node(250)
     assert not another_tree.contains(250)
 
-
 def test_delete_2_children_tree(another_tree):
     assert another_tree.contains(250)
     another_tree.delete_node(250)
-    assert [x for x in another_tree.breadth_first(another_tree.head)] == [50, 200, 150, 275, 100, 175, 240, 235, 245, 237]
+    assert [x for x in another_tree.preorder(another_tree.head)] == [50, 200, 150, 100, 175, 245, 240, 235, 237, 275]
 
 
 def test_delete_2_child_tree_1(right_balance_tree):

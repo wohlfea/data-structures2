@@ -2,6 +2,9 @@
 # import timeit
 from timeit import default_timer as timer
 from collections import deque
+import io
+import random
+# from math import random
 
 
 class BST(object):
@@ -50,6 +53,7 @@ class BST(object):
     def contains(self, value):
         """Check if given value is already in tree."""
         curnode = self._get_node(value)
+        # return curnode.data == value
         if curnode.data == value:
             return True
         return False
@@ -94,13 +98,15 @@ class BST(object):
             right_balance = self.depth(node.right_child)
         if self.head.left_child:
             left_balance = self.depth(node.left_child)
-        difference = left_balance - right_balance
+        difference = right_balance - left_balance
         if not difference:
             return 0
         return difference / abs(difference)
 
     def preorder(self, node):
         yield node.data
+        # import pdb; pdb.set_trace()
+
         if node.get_left_child():
             for item in self.preorder(node.left_child):
                 yield item
@@ -137,9 +143,11 @@ class BST(object):
                 queue.appendleft(node.right_child)
 
     def delete_node(self, val):
+        # fix to not call _get_node twice
         if not self.contains(val):
             return
         node = self._get_node(val)
+        # if node is head
         child_count = len([x for x in [node.left_child, node.right_child] if x])
         if not child_count:
             self._childless(node)
@@ -156,6 +164,8 @@ class BST(object):
             if target.right_child:
                 target.parent.left_child = target.right_child
                 target.right_child.parent = target.parent
+            else:
+                target.parent.right_child = None
             target.parent = node.parent
             if node.parent.left_child is node:
                 node.parent.left_child = target
@@ -166,6 +176,8 @@ class BST(object):
             if target.left_child:
                 target.parent.right_child = target.left_child
                 target.left_child.parent = target.parent
+            else:
+                target.parent.right_child = None
             target.parent = node.parent
             if node.parent.left_child is node:
                 node.parent.left_child = target
@@ -173,10 +185,17 @@ class BST(object):
                 node.parent.right_child = target
 
         if node.left_child is not target:
-            node.left_child.parent = target
+            try:
+                node.left_child.parent = target
+            except AttributeError:
+                pass
             target.left_child = node.left_child
         if node.right_child is not target:
-            node.right_child.parent = target
+            try:
+                node.right_child.parent = target
+            except AttributeError:
+                pass
+
             target.right_child = node.right_child
         node.parent = node.left_child = node.right_child = None
 
@@ -189,6 +208,9 @@ class BST(object):
 
     def _only_child(self, node):
         if node.left_child:
+            # child = node.left_child
+            # else child = node.right
+            # get parent (getattr(node.parent))
             node.left_child.parent = node.parent
             if node.parent.left_child is node:
                 node.parent.left_child = node.left_child
@@ -203,6 +225,17 @@ class BST(object):
             else:
                 node.parent.right_child = node.right_child
         node.right_child = node.parent = node.left_child = None
+
+
+    def get_dot(self):
+        """return the tree with root 'self' as a dot graph for visualization"""
+        return "digraph G{\n%s}" % ("" if self.head.data is None else (
+            "\t%s;\n%s\n" % (
+                self.head.data,
+                "\n".join(self.head._get_dot())
+            )
+        ))
+
 
 
 class BSTNode(object):
@@ -239,25 +272,64 @@ class BSTNode(object):
         """Get the right child for a node."""
         return self.right_child
 
+    def _get_dot(self):
+        """recursively prepare a dot graph entry for this node."""
+        if self.left_child is not None:
+            yield "\t%s -> %s;" % (self.data, self.left_child.data)
+            for i in self.left_child._get_dot():
+                yield i
+        elif self.right_child is not None:
+            r = random.randint(0, 1e9)
+            yield "\tnull%s [shape=point];" % r
+            yield "\t%s -> null%s;" % (self.data, r)
+        if self.right_child is not None:
+            yield "\t%s -> %s;" % (self.data, self.right_child.data)
+            for i in self.right_child._get_dot():
+                yield i
+        elif self.left_child is not None:
+            r = random.randint(0, 1e9)
+            yield "\tnull%s [shape=point];" % r
+            yield "\t%s -> null%s;" % (self.data, r)
+
 
 if __name__ == '__main__':
+    import subprocess
     new_bst = BST()
-    new_bst.insert(20)
-    new_bst.insert(22)
-    new_bst.insert(14)
-    new_bst.insert(17)
-    new_bst.insert(21)
-    new_bst.insert(3)
-    new_bst.insert(6)
-    print('Search for head value:')
-    start = timer()
-    new_bst.contains(20)
-    end = timer()
-    best = end - start
-    start1 = timer()
-    new_bst.contains(6)
-    end1 = timer()
-    worst = end1 - start1
-    print('Best case: {}\nWorst case: {}'.format(best, worst))
-    # print(new_bst.preorder(new_bst.head))
-    print([x for x in new_bst.breadth_first(new_bst.head)])
+    # new_bst.insert(20)
+    # new_bst.insert(22)
+    # new_bst.insert(14)
+    # new_bst.insert(17)
+    # new_bst.insert(21)
+    # new_bst.insert(3)
+    # new_bst.insert(6)
+    new_bst.insert(50)
+    new_bst.insert(200)
+    new_bst.insert(250)
+    new_bst.insert(240)
+    new_bst.insert(275)
+    new_bst.insert(150)
+    new_bst.insert(175)
+    new_bst.insert(235)
+    new_bst.insert(245)
+    new_bst.insert(237)
+    new_bst.insert(100)
+    new_bst.delete_node(250)
+    # print('Search for head value:')
+    # start = timer()
+    # new_bst.contains(20)
+    # end = timer()
+    # best = end - start
+    # start1 = timer()
+    # new_bst.contains(6)
+    # end1 = timer()
+    # worst = end1 - start1
+    # print('Best case: {}\nWorst case: {}'.format(best, worst))
+    # # print(new_bst.preorder(new_bst.head))
+    # print([x for x in new_bst.breadth_first(new_bst.head)])
+    # data = new_bst.get_dot()
+    # with io.open('outfile', 'w') as file:
+    #     file.write(data)
+    dot_graph = new_bst.get_dot()
+    dot_graph = dot_graph.encode('utf-8')
+    t = subprocess.Popen(["dot", "-Tpng"], stdin=subprocess.PIPE)
+    t.communicate(dot_graph)

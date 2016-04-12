@@ -158,3 +158,35 @@ def test_balance_1_node():
 def test_right_tree(right_balance_tree):
     """Test balance of right higher tree."""
     assert right_balance_tree.balance() == -1
+
+
+def test_preorder(populated_tree):
+    assert [x for x in populated_tree.preorder(populated_tree.head)] == [20, 14, 3, 6, 17, 22, 21]
+
+
+def test_preorder2(right_balance_tree):
+    assert [x for x in right_balance_tree.preorder(right_balance_tree.head)] == [30, 10, 8, 15, 60, 40, 50, 45]
+
+
+def test_inorder(populated_tree):
+    assert [x for x in populated_tree.inorder(populated_tree.head)] == [3, 6, 14, 17, 20, 21, 22]
+
+
+def test_inorder2(right_balance_tree):
+    assert [x for x in right_balance_tree.inorder(right_balance_tree.head)] == [8, 10, 15, 30, 40, 45, 50, 60]
+
+
+def test_post_order(populated_tree):
+    assert [x for x in populated_tree.post_order(populated_tree.head)] == [6, 3, 17, 14, 21, 22, 20]
+
+
+def test_post_order2(right_balance_tree):
+    assert [x for x in right_balance_tree.post_order(right_balance_tree.head)] == [8, 15, 10, 45, 50, 40, 60, 30]
+
+
+def test_breadth(populated_tree):
+    assert [x for x in populated_tree.breadth_first(populated_tree.head)] == [20, 14, 22, 3, 17, 21, 6]
+
+
+def test_breadth2(right_balance_tree):
+    assert [x for x in right_balance_tree.breadth_first(right_balance_tree.head)] == [30, 10, 60, 8, 15, 40, 50, 45]

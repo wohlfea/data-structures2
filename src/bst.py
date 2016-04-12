@@ -98,15 +98,10 @@ class BST(object):
             right_balance = self.depth(node.right_child)
         if self.head.left_child:
             left_balance = self.depth(node.left_child)
-        difference = right_balance - left_balance
-        if not difference:
-            return 0
-        return difference / abs(difference)
+        return right_balance - left_balance
 
     def preorder(self, node):
         yield node.data
-        # import pdb; pdb.set_trace()
-
         if node.get_left_child():
             for item in self.preorder(node.left_child):
                 yield item

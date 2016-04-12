@@ -176,7 +176,7 @@ def test_balance_1_node():
 
 def test_right_tree(right_balance_tree):
     """Test balance of right higher tree."""
-    assert right_balance_tree.balance() == 1
+    assert right_balance_tree.balance() == 2
 
 
 def test_preorder(populated_tree):

@@ -32,6 +32,7 @@ class BST(object):
             if self.length == 0:
                 self.head = BSTNode(value)
                 self.length += 1
+                print(value, self.balance(self.head))
                 return
             curnode = self._get_node(value)
             if value < curnode.data:
@@ -43,8 +44,87 @@ class BST(object):
             else:
                 raise ValueError('That value is already in the tree.')
 
+            self._balance_nodes_insert(curnode)
+
         else:
             raise ValueError("You cannot insert {}".format(type(value)))
+
+    def _balance_nodes_insert(self, node):
+        while node:
+            balanced = self.balance(node)
+            if balanced < -1:
+                try:
+                    if self.balance(node.right_child) > 0:
+                        self._right_left_case(node)
+                except AttributeError:
+                    pass
+
+                self._right_right_case(node)
+                if node is self.head:
+                    self.head = node.parent
+
+            elif balanced > 1:
+                try:
+                    if self.balance(node.left_child) < 0:
+                        self._left_right_case(node)
+                except AttributeError:
+                    pass
+                self._left_left_case(node)
+                if node is self.head:
+                    self.head = node.parent
+            node = node.parent
+
+    def _right_right_case(self, node):
+        """Reorder tree in case of balance less than -1."""
+        try:
+            if node.parent.right_child is node:
+                node.parent.right_child = node.right_child
+            elif node.parent.left_child is node:
+                node.parent.left_child = node.right_child
+        except AttributeError:
+            pass
+        node.right_child.parent = node.parent
+
+        node.parent = node.right_child
+        if node.parent.left_child:
+            node.parent.left_child.parent = node
+        node.right_child = node.parent.left_child
+        node.parent.left_child = node
+
+
+    def _right_left_case(self, node):
+        """Shuffle nodes to be able to use RR."""
+        pivot = node.right_child.data
+        node.right_child.data = node.right_child.left_child.data
+        node.right_child.right_child = node.right_child.left_child
+        node.right_child.right_child.data = pivot
+        node.right_child.left_child = None
+
+
+    def _left_left_case(self, node):
+        """Order tree from left left case."""
+        try:
+            if node.parent.right_child is node:
+                node.parent.right_child = node.left_child
+            elif node.parent.left_child is node:
+                node.parent.left_child = node.left_child
+        except AttributeError:
+            pass
+        node.left_child.parent = node.parent
+
+        node.parent = node.left_child
+        if node.parent.right_child:
+            node.parent.right_child.parent = node
+        node.left_child = node.parent.right_child
+        node.parent.right_child = node
+
+    def _left_right_case(self, node):
+        pivot = node.left_child.data
+        node.left_child.data = node.left_child.right_child.data
+        node.left_child.left_child = node.left_child.right_child
+        node.left_child.left_child.data = pivot
+        node.left_child.right_child = None
+
 
     def size(self):
         """Return the number of nodes in the tree."""
@@ -95,10 +175,12 @@ class BST(object):
         if not self.head:
             return 0
         if node.right_child:
+            print('in right child', node.right_child.data)
             right_balance = self.depth(node.right_child)
-        if self.head.left_child:
+        if node.left_child:
+            print('in left child')
             left_balance = self.depth(node.left_child)
-        return right_balance - left_balance
+        return left_balance - right_balance
 
     def preorder(self, node):
         yield node.data
@@ -242,6 +324,7 @@ class BSTNode(object):
         self.parent = parent
         self.left_child = None
         self.right_child = None
+        self.balance = 0
 
     def set_parent(self, parent):
         """Set parent value for a node."""
@@ -290,6 +373,12 @@ class BSTNode(object):
 if __name__ == '__main__':
     import subprocess
     new_bst = BST()
+    new_bst.insert(100)
+    new_bst.insert(50)
+    new_bst.insert(75)
+    # new_bst.insert(100)
+    # new_bst.insert(150)
+    # import pdb; pdb.set_trace()
     # new_bst.insert(20)
     # new_bst.insert(22)
     # new_bst.insert(14)
@@ -297,18 +386,18 @@ if __name__ == '__main__':
     # new_bst.insert(21)
     # new_bst.insert(3)
     # new_bst.insert(6)
-    new_bst.insert(50)
-    new_bst.insert(200)
-    new_bst.insert(250)
-    new_bst.insert(240)
-    new_bst.insert(275)
-    new_bst.insert(150)
-    new_bst.insert(175)
-    new_bst.insert(235)
-    new_bst.insert(245)
-    new_bst.insert(237)
-    new_bst.insert(100)
-    new_bst.delete_node(250)
+    # new_bst.insert(50)
+    # new_bst.insert(200)
+    # new_bst.insert(250)
+    # new_bst.insert(240)
+    # new_bst.insert(275)
+    # new_bst.insert(150)
+    # new_bst.insert(175)
+    # new_bst.insert(235)
+    # new_bst.insert(245)
+    # new_bst.insert(237)
+    # new_bst.insert(100)
+    # new_bst.delete_node(250)
     # print('Search for head value:')
     # start = timer()
     # new_bst.contains(20)

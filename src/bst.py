@@ -32,7 +32,6 @@ class BST(object):
             if self.length == 0:
                 self.head = BSTNode(value)
                 self.length += 1
-                print(value, self.balance(self.head))
                 return
             curnode = self._get_node(value)
             if value < curnode.data:
@@ -175,10 +174,8 @@ class BST(object):
         if not self.head:
             return 0
         if node.right_child:
-            print('in right child', node.right_child.data)
             right_balance = self.depth(node.right_child)
         if node.left_child:
-            print('in left child')
             left_balance = self.depth(node.left_child)
         return left_balance - right_balance
 
@@ -242,7 +239,8 @@ class BST(object):
                 target.parent.left_child = target.right_child
                 target.right_child.parent = target.parent
             else:
-                target.parent.right_child = None
+                pass
+                # target.parent.left_child = None
             target.parent = node.parent
             if node.parent.left_child is node:
                 node.parent.left_child = target
@@ -254,27 +252,32 @@ class BST(object):
                 target.parent.right_child = target.left_child
                 target.left_child.parent = target.parent
             else:
-                target.parent.right_child = None
+                pass
+                # target.parent.right_child = None
             target.parent = node.parent
             if node.parent.left_child is node:
                 node.parent.left_child = target
             else:
                 node.parent.right_child = target
-
+        # import pdb; pdb.set_trace()
         if node.left_child is not target:
             try:
                 node.left_child.parent = target
+                target.left_child = node.left_child
+
             except AttributeError:
                 pass
             target.left_child = node.left_child
         if node.right_child is not target:
             try:
                 node.right_child.parent = target
+                target.right_child = node.right_child
             except AttributeError:
                 pass
 
             target.right_child = node.right_child
         node.parent = node.left_child = node.right_child = None
+        # import pdb; pdb.set_trace()
 
     def _childless(self, node):
         if node.parent.left_child is node:
@@ -373,31 +376,23 @@ class BSTNode(object):
 if __name__ == '__main__':
     import subprocess
     new_bst = BST()
-    new_bst.insert(100)
     new_bst.insert(50)
-    new_bst.insert(75)
-    # new_bst.insert(100)
-    # new_bst.insert(150)
-    # import pdb; pdb.set_trace()
-    # new_bst.insert(20)
-    # new_bst.insert(22)
-    # new_bst.insert(14)
-    # new_bst.insert(17)
-    # new_bst.insert(21)
-    # new_bst.insert(3)
-    # new_bst.insert(6)
-    # new_bst.insert(50)
-    # new_bst.insert(200)
-    # new_bst.insert(250)
-    # new_bst.insert(240)
-    # new_bst.insert(275)
-    # new_bst.insert(150)
-    # new_bst.insert(175)
-    # new_bst.insert(235)
-    # new_bst.insert(245)
-    # new_bst.insert(237)
-    # new_bst.insert(100)
-    # new_bst.delete_node(250)
+    new_bst.insert(200)
+    new_bst.insert(250)
+    new_bst.insert(240)
+    new_bst.insert(275)
+    new_bst.insert(150)
+    new_bst.insert(175)
+    new_bst.insert(235)
+    new_bst.insert(245)
+    new_bst.insert(237)
+    new_bst.insert(100)
+    new_bst.delete_node(250)
+
+
+
+    # [x for x in another_tree.preorder(another_tree.head)]
+
     # print('Search for head value:')
     # start = timer()
     # new_bst.contains(20)
@@ -410,9 +405,6 @@ if __name__ == '__main__':
     # print('Best case: {}\nWorst case: {}'.format(best, worst))
     # # print(new_bst.preorder(new_bst.head))
     # print([x for x in new_bst.breadth_first(new_bst.head)])
-    # data = new_bst.get_dot()
-    # with io.open('outfile', 'w') as file:
-    #     file.write(data)
     dot_graph = new_bst.get_dot()
     dot_graph = dot_graph.encode('utf-8')
     t = subprocess.Popen(["dot", "-Tpng"], stdin=subprocess.PIPE)

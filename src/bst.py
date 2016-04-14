@@ -1,10 +1,6 @@
 # _*_ encoding: utf-8 _*_
-# import timeit
-from timeit import default_timer as timer
 from collections import deque
-import io
 import random
-# from math import random
 
 
 class BST(object):
@@ -90,7 +86,6 @@ class BST(object):
         node.right_child = node.parent.left_child
         node.parent.left_child = node
 
-
     def _right_left_case(self, node):
         """Shuffle nodes to be able to use RR."""
 
@@ -99,7 +94,6 @@ class BST(object):
         node.right_child.right_child = node.right_child.left_child
         node.right_child.right_child.data = pivot
         node.right_child.left_child = None
-
 
     def _left_left_case(self, node):
         """Order tree from left left case."""
@@ -125,7 +119,6 @@ class BST(object):
         node.left_child.left_child.data = pivot
         node.left_child.right_child = None
 
-
     def size(self):
         """Return the number of nodes in the tree."""
         return self.length
@@ -133,7 +126,6 @@ class BST(object):
     def contains(self, value):
         """Check if given value is already in tree."""
         curnode = self._get_node(value)
-        # return curnode.data == value
         if curnode.data == value:
             return True
         return False
@@ -218,12 +210,11 @@ class BST(object):
                 queue.appendleft(node.right_child)
 
     def delete_node(self, val):
-        # fix to not call _get_node twice
         if not self.contains(val):
             return
         node = self._get_node(val)
-        # if node is head
-        child_count = len([x for x in [node.left_child, node.right_child] if x])
+        child_count = len([x for x in [node.left_child,
+                                       node.right_child] if x])
         if not child_count:
             self._childless(node)
         elif child_count == 1:
@@ -287,7 +278,6 @@ class BST(object):
 
             target.right_child = node.right_child
         node.parent = node.left_child = node.right_child = None
-        # import pdb; pdb.set_trace()
 
     def _childless(self, node):
         if node.parent.left_child is node:
@@ -298,9 +288,6 @@ class BST(object):
 
     def _only_child(self, node):
         if node.left_child:
-            # child = node.left_child
-            # else child = node.right
-            # get parent (getattr(node.parent))
             node.left_child.parent = node.parent
             if node.parent.left_child is node:
                 node.parent.left_child = node.left_child
@@ -316,7 +303,6 @@ class BST(object):
                 node.parent.right_child = node.right_child
         node.right_child = node.parent = node.left_child = None
 
-
     def get_dot(self):
         """return the tree with root 'self' as a dot graph for visualization"""
         return "digraph G{\n%s}" % ("" if self.head.data is None else (
@@ -325,7 +311,6 @@ class BST(object):
                 "\n".join(self.head._get_dot())
             )
         ))
-
 
 
 class BSTNode(object):
@@ -398,35 +383,6 @@ if __name__ == '__main__':
     new_bst.insert(237)
     new_bst.insert(100)
     new_bst.delete_node(250)
-
-
-
-    # new_bst.insert(30)
-    # new_bst.insert(60)
-    # new_bst.insert(40)
-    # new_bst.insert(50)
-    # new_bst.insert(45)
-    # new_bst.insert(10)
-    # new_bst.insert(8)
-    # new_bst.insert(15)
-    # new_bst.delete_node(10)
-
-
-
-    # [x for x in another_tree.preorder(another_tree.head)]
-
-    # print('Search for head value:')
-    # start = timer()
-    # new_bst.contains(20)
-    # end = timer()
-    # best = end - start
-    # start1 = timer()
-    # new_bst.contains(6)
-    # end1 = timer()
-    # worst = end1 - start1
-    # print('Best case: {}\nWorst case: {}'.format(best, worst))
-    # # print(new_bst.preorder(new_bst.head))
-    # print([x for x in new_bst.breadth_first(new_bst.head)])
     dot_graph = new_bst.get_dot()
     dot_graph = dot_graph.encode('utf-8')
     t = subprocess.Popen(["dot", "-Tpng"], stdin=subprocess.PIPE)

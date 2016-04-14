@@ -110,7 +110,8 @@ def test_num_only():
 
 
 def test_child_setting():
-    """Test that inserting a value less than head sets right child value to head."""
+    """Test that inserting a value less than
+    head sets right child value to head."""
     from bst import BST
     new_bst = BST()
     new_bst.insert(5)
@@ -119,7 +120,8 @@ def test_child_setting():
 
 
 def test_larger_child():
-    """Test that inserting a value greater than head sets the left child of head."""
+    """Test that inserting a value greater than
+    head sets the left child of head."""
     from bst import BST
     new_bst = BST()
     new_bst.insert(5)
@@ -138,7 +140,8 @@ def test_insert_same():
 
 @pytest.mark.parametrize('value, result', NODES_IN_TREE)
 def test_contains(populated_tree, value, result):
-    """Test that contains method returns correct T/F correctly if node is/isn't in tree."""
+    """Test that contains method returns correct T/F
+    correctly if node is/isn't in tree."""
     assert populated_tree.contains(value) == result
 
 
@@ -285,6 +288,3 @@ def test_new_tree():
     new_bst.insert(30)
     new_bst.insert(40)
     assert [x for x in new_bst.inorder(new_bst.head)] == [25, 30, 40, 100]
-
-
-

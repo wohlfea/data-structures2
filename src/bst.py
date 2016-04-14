@@ -93,6 +93,7 @@ class BST(object):
 
     def _right_left_case(self, node):
         """Shuffle nodes to be able to use RR."""
+
         pivot = node.right_child.data
         node.right_child.data = node.right_child.left_child.data
         node.right_child.right_child = node.right_child.left_child
@@ -233,26 +234,30 @@ class BST(object):
 
     def _has_2_children(self, node):
         balanced = self.balance(node)
-        if balanced <= 0:
+        if balanced < 0:
             target = self._get_node(min([x for x in self.breadth_first(node.right_child)]))
             if target.right_child:
                 target.parent.left_child = target.right_child
                 target.right_child.parent = target.parent
             else:
-                pass
-                # target.parent.left_child = None
+                # pass
+                node.data = target.data
+                target.parent.left_child = None
+                return
             target.parent = node.parent
             if node.parent.left_child is node:
                 node.parent.left_child = target
             else:
                 node.parent.right_child = target
-        else:
+        elif balanced > 0:
             target = self._get_node(max([x for x in self.breadth_first(node.left_child)]))
             if target.left_child:
                 target.parent.right_child = target.left_child
                 target.left_child.parent = target.parent
             else:
-                pass
+                node.data = target.data
+                target.parent.right_child = None
+                return
                 # target.parent.right_child = None
             target.parent = node.parent
             if node.parent.left_child is node:
@@ -260,6 +265,11 @@ class BST(object):
             else:
                 node.parent.right_child = target
         # import pdb; pdb.set_trace()
+        else:
+            target = node.left_child
+            node.data = target.data
+            node.left_child = None
+            return
         if node.left_child is not target:
             try:
                 node.left_child.parent = target
@@ -388,6 +398,18 @@ if __name__ == '__main__':
     new_bst.insert(237)
     new_bst.insert(100)
     new_bst.delete_node(250)
+
+
+
+    # new_bst.insert(30)
+    # new_bst.insert(60)
+    # new_bst.insert(40)
+    # new_bst.insert(50)
+    # new_bst.insert(45)
+    # new_bst.insert(10)
+    # new_bst.insert(8)
+    # new_bst.insert(15)
+    # new_bst.delete_node(10)
 
 
 

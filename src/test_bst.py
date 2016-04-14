@@ -254,14 +254,14 @@ def test_delete_2_children(another_tree):
 def test_delete_2_children_tree(another_tree):
     assert another_tree.contains(250)
     another_tree.delete_node(250)
-    assert [x for x in another_tree.preorder(another_tree.head)] == [200, 150, 50, 100, 175, 240, 235, 237, 275, 245]
+    assert [x for x in another_tree.preorder(another_tree.head)] == [200, 150, 50, 100, 175, 240, 235, 237, 245, 275]
 
 
 def test_delete_2_child_tree_1(right_balance_tree):
     assert right_balance_tree.contains(10)
     right_balance_tree.delete_node(10)
     assert not right_balance_tree.contains(10)
-    assert [x for x in right_balance_tree.preorder(right_balance_tree.head)] == [30, 15, 8, 60, 40, 50, 45]
+    assert [x for x in right_balance_tree.preorder(right_balance_tree.head)] == [40, 15, 8, 30, 50, 45, 60]
 
 
 def test_balance_insert(tiny_tree):

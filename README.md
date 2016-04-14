@@ -1,3 +1,6 @@
+[![Travis](https://travis-ci.org/palindromed/data-structures2.svg?branch=master)](https://travis-ci.org/palindromed/data-structures2.svg?branch=master)
+
+
 This repo holds sample code for some classic data structures.
 
 It's a joint project of Hannah Krager and A.J. Wohlfert.

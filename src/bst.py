@@ -1,7 +1,6 @@
 # _*_ encoding: utf-8 _*_
-# import timeit
-from timeit import default_timer as timer
 from collections import deque
+import random
 
 
 class BST(object):
@@ -40,8 +39,85 @@ class BST(object):
             else:
                 raise ValueError('That value is already in the tree.')
 
+            self._balance_nodes_insert(curnode)
+
         else:
             raise ValueError("You cannot insert {}".format(type(value)))
+
+    def _balance_nodes_insert(self, node):
+        while node:
+            balanced = self.balance(node)
+            if balanced < -1:
+                try:
+                    if self.balance(node.right_child) > 0:
+                        self._right_left_case(node)
+                except AttributeError:
+                    pass
+
+                self._right_right_case(node)
+                if node is self.head:
+                    self.head = node.parent
+
+            elif balanced > 1:
+                try:
+                    if self.balance(node.left_child) < 0:
+                        self._left_right_case(node)
+                except AttributeError:
+                    pass
+                self._left_left_case(node)
+                if node is self.head:
+                    self.head = node.parent
+            node = node.parent
+
+    def _right_right_case(self, node):
+        """Reorder tree in case of balance less than -1."""
+        try:
+            if node.parent.right_child is node:
+                node.parent.right_child = node.right_child
+            elif node.parent.left_child is node:
+                node.parent.left_child = node.right_child
+        except AttributeError:
+            pass
+        node.right_child.parent = node.parent
+
+        node.parent = node.right_child
+        if node.parent.left_child:
+            node.parent.left_child.parent = node
+        node.right_child = node.parent.left_child
+        node.parent.left_child = node
+
+    def _right_left_case(self, node):
+        """Shuffle nodes to be able to use RR."""
+
+        pivot = node.right_child.data
+        node.right_child.data = node.right_child.left_child.data
+        node.right_child.right_child = node.right_child.left_child
+        node.right_child.right_child.data = pivot
+        node.right_child.left_child = None
+
+    def _left_left_case(self, node):
+        """Order tree from left left case."""
+        try:
+            if node.parent.right_child is node:
+                node.parent.right_child = node.left_child
+            elif node.parent.left_child is node:
+                node.parent.left_child = node.left_child
+        except AttributeError:
+            pass
+        node.left_child.parent = node.parent
+
+        node.parent = node.left_child
+        if node.parent.right_child:
+            node.parent.right_child.parent = node
+        node.left_child = node.parent.right_child
+        node.parent.right_child = node
+
+    def _left_right_case(self, node):
+        pivot = node.left_child.data
+        node.left_child.data = node.left_child.right_child.data
+        node.left_child.left_child = node.left_child.right_child
+        node.left_child.left_child.data = pivot
+        node.left_child.right_child = None
 
     def size(self):
         """Return the number of nodes in the tree."""
@@ -63,7 +139,6 @@ class BST(object):
         queue = [node]
         depth = 1
         cur_depth = 1
-
         while queue:
             while queue[-1].get_right_child() not in visited or queue[-1].get_left_child() not in visited:
                 lc = queue[-1].get_left_child()
@@ -84,21 +159,18 @@ class BST(object):
             cur_depth -= 1
         return depth
 
-    def balance(self):
+    def balance(self, node=None):
         """Return a value based on balance of tree."""
+        node = node or self.head
         right_balance = 0
         left_balance = 0
         if not self.head:
             return 0
-        if self.head.right_child:
-            right_balance = self.depth(self.head.right_child)
-        if self.head.left_child:
-            left_balance = self.depth(self.head.left_child)
-        difference = left_balance - right_balance
-        if not difference:
-            return 0
-        return difference / abs(difference)
-
+        if node.right_child:
+            right_balance = self.depth(node.right_child)
+        if node.left_child:
+            left_balance = self.depth(node.left_child)
+        return left_balance - right_balance
 
     def preorder(self, node):
         yield node.data
@@ -108,7 +180,6 @@ class BST(object):
         if node.get_right_child():
             for item in self.preorder(node.right_child):
                 yield item
-
 
     def inorder(self, node):
         if node.left_child:
@@ -138,7 +209,108 @@ class BST(object):
             if node.right_child:
                 queue.appendleft(node.right_child)
 
+    def delete_node(self, val):
+        if not self.contains(val):
+            return
+        node = self._get_node(val)
+        child_count = len([x for x in [node.left_child,
+                                       node.right_child] if x])
+        if not child_count:
+            self._childless(node)
+        elif child_count == 1:
+            self._only_child(node)
+        else:
+            self._has_2_children(node)
+        self.length -= 1
 
+    def _has_2_children(self, node):
+        balanced = self.balance(node)
+        if balanced < 0:
+            target = self._get_node(min([x for x in self.breadth_first(node.right_child)]))
+            if target.right_child:
+                target.parent.left_child = target.right_child
+                target.right_child.parent = target.parent
+            else:
+                # pass
+                node.data = target.data
+                target.parent.left_child = None
+                return
+            target.parent = node.parent
+            if node.parent.left_child is node:
+                node.parent.left_child = target
+            else:
+                node.parent.right_child = target
+        elif balanced > 0:
+            target = self._get_node(max([x for x in self.breadth_first(node.left_child)]))
+            if target.left_child:
+                target.parent.right_child = target.left_child
+                target.left_child.parent = target.parent
+            else:
+                node.data = target.data
+                target.parent.right_child = None
+                return
+                # target.parent.right_child = None
+            target.parent = node.parent
+            if node.parent.left_child is node:
+                node.parent.left_child = target
+            else:
+                node.parent.right_child = target
+        # import pdb; pdb.set_trace()
+        else:
+            target = node.left_child
+            node.data = target.data
+            node.left_child = None
+            return
+        if node.left_child is not target:
+            try:
+                node.left_child.parent = target
+                target.left_child = node.left_child
+
+            except AttributeError:
+                pass
+            target.left_child = node.left_child
+        if node.right_child is not target:
+            try:
+                node.right_child.parent = target
+                target.right_child = node.right_child
+            except AttributeError:
+                pass
+
+            target.right_child = node.right_child
+        node.parent = node.left_child = node.right_child = None
+
+    def _childless(self, node):
+        if node.parent.left_child is node:
+            node.parent.left_child = None
+        else:
+            node.parent.right_child = None
+        node.parent = None
+
+    def _only_child(self, node):
+        if node.left_child:
+            node.left_child.parent = node.parent
+            if node.parent.left_child is node:
+                node.parent.left_child = node.left_child
+            else:
+                node.parent.right_child = node.left_child
+
+        else:
+            node.right_child.parent = node.parent
+            if node.parent.left_child is node:
+                node.parent.left_child = node.right_child
+
+            else:
+                node.parent.right_child = node.right_child
+        node.right_child = node.parent = node.left_child = None
+
+    def get_dot(self):
+        """return the tree with root 'self' as a dot graph for visualization"""
+        return "digraph G{\n%s}" % ("" if self.head.data is None else (
+            "\t%s;\n%s\n" % (
+                self.head.data,
+                "\n".join(self.head._get_dot())
+            )
+        ))
 
 
 class BSTNode(object):
@@ -150,6 +322,7 @@ class BSTNode(object):
         self.parent = parent
         self.left_child = None
         self.right_child = None
+        self.balance = 0
 
     def set_parent(self, parent):
         """Set parent value for a node."""
@@ -175,25 +348,42 @@ class BSTNode(object):
         """Get the right child for a node."""
         return self.right_child
 
+    def _get_dot(self):
+        """recursively prepare a dot graph entry for this node."""
+        if self.left_child is not None:
+            yield "\t%s -> %s;" % (self.data, self.left_child.data)
+            for i in self.left_child._get_dot():
+                yield i
+        elif self.right_child is not None:
+            r = random.randint(0, 1e9)
+            yield "\tnull%s [shape=point];" % r
+            yield "\t%s -> null%s;" % (self.data, r)
+        if self.right_child is not None:
+            yield "\t%s -> %s;" % (self.data, self.right_child.data)
+            for i in self.right_child._get_dot():
+                yield i
+        elif self.left_child is not None:
+            r = random.randint(0, 1e9)
+            yield "\tnull%s [shape=point];" % r
+            yield "\t%s -> null%s;" % (self.data, r)
+
 
 if __name__ == '__main__':
+    import subprocess
     new_bst = BST()
-    new_bst.insert(20)
-    new_bst.insert(22)
-    new_bst.insert(14)
-    new_bst.insert(17)
-    new_bst.insert(21)
-    new_bst.insert(3)
-    new_bst.insert(6)
-    print('Search for head value:')
-    start = timer()
-    new_bst.contains(20)
-    end = timer()
-    best = end - start
-    start1 = timer()
-    new_bst.contains(6)
-    end1 = timer()
-    worst = end1 - start1
-    print('Best case: {}\nWorst case: {}'.format(best, worst))
-    # print(new_bst.preorder(new_bst.head))
-    print([x for x in new_bst.breadth_first(new_bst.head)])
+    new_bst.insert(50)
+    new_bst.insert(200)
+    new_bst.insert(250)
+    new_bst.insert(240)
+    new_bst.insert(275)
+    new_bst.insert(150)
+    new_bst.insert(175)
+    new_bst.insert(235)
+    new_bst.insert(245)
+    new_bst.insert(237)
+    new_bst.insert(100)
+    new_bst.delete_node(250)
+    dot_graph = new_bst.get_dot()
+    dot_graph = dot_graph.encode('utf-8')
+    t = subprocess.Popen(["dot", "-Tpng"], stdin=subprocess.PIPE)
+    t.communicate(dot_graph)

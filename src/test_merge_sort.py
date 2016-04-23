@@ -3,7 +3,7 @@ import pytest
 from random import randint
 
 
-RAND_LISTS = [[randint(1, 2000) for x in range(randint(1, 500))] for l in range(1, 2000)]
+RAND_LISTS = [[randint(1, 2000) for x in range(randint(1, 500))] for l in range(1, 20000)]
 @pytest.fixture(params=RAND_LISTS)
 def rand_list(request):
     return request.param
@@ -42,3 +42,8 @@ def test_merge_sort_01():
 def test_merge_sort_random_01(rand_list):
     from merge_sort import merge_sort
     assert merge_sort(rand_list) == sorted(rand_list)
+
+
+def test_merge_sort_string():
+    from merge_sort import merge_sort
+    assert merge_sort(['abc', 'defa', 'a']) == ['a', 'abc', 'defa']

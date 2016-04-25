@@ -7,6 +7,9 @@ It's a joint project of Hannah Krager and A.J. Wohlfert.
 ______________
 
 Insertion sort algorithm has been included in the src directory and demonstrates best and worst case scenario performance time.
+
+The merge sort algorithm has been included in the src directory and demonstrates best and worst case scenario performance time.
+The merge sort algorithm recursively splits the list into smaller lists, sorts and then merges the two lists.
 ______________
 Sources:
 

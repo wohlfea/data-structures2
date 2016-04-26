@@ -7,6 +7,7 @@ class Trie(object):
         self.root = {}
 
     def insert(self, token):
+        """Insert word into the Trie."""
         if not token or not isinstance(token, str):
             return
         cur = self.root
@@ -15,6 +16,7 @@ class Trie(object):
         cur['$'] = '$'
 
     def contains(self, token):
+        """Check if word is in the Trie."""
         if not token or not isinstance(token, str):
             return False
         cur = self.root
@@ -27,25 +29,11 @@ class Trie(object):
         return True
 
     def traversal(self, start=None, word=''):
-        if not start:
-            start = self.root
-        end = False
-        keys = start.keys()
-        if '$' in keys:
-            keys.remove('$')
-            end = True
-        for key in keys:
-            for thing in self.traversal(start[key], word + key):
-                yield thing
-        if end:
-            yield word
-    # def traversal(self, start=None, word=''):
-    #     if not start:
-    #         start = self.root
-    #     keys = start.keys()
-    #     if word:
-    #         if word[-1] == '$':
-    #             yield word[:-1]
-    #     for key in keys:
-    #         for word in self.traversal(start[key], word + key):
-    #             yield word
+        """Generator that yields all the words in the Trie."""
+        start = start or self.root
+        for key in start.keys():
+            if key == '$':
+                yield word
+            else:
+                for thing in self.traversal(start[key], word + key):
+                    yield thing

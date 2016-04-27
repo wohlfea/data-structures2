@@ -142,7 +142,7 @@ def test_small_traversal():
     my_trie.insert('word')
     my_trie.insert('worldly')
     my_trie.insert('otherword')
-    assert [x for x in my_trie.traversal()] == ['otherword', 'word', 'worldly']
+    assert sorted([x for x in my_trie.traversal()]) == ['otherword', 'word', 'worldly']
 
 
 def test_large_traversal(full_trie):
@@ -167,3 +167,20 @@ def test_single_apostrophe():
     single = Trie()
     single.insert('don\'t')
     assert [x for x in single.traversal()] == ['don\'t']
+
+
+def test_autocomplete(full_trie):
+    autoc = full_trie.autocomplete('in')
+    for key in autoc.keys():
+        autoc[key] = sorted(autoc[key])
+    assert autoc == {'i': ['i', 'in'], 'in': ['in']}
+
+
+def test_autocomplete2(full_trie):
+    autoc = full_trie.autocomplete('into')
+    for key in autoc.keys():
+        autoc[key] = sorted(autoc[key])
+    assert autoc == {'i': ['i', 'in'], 'in': ['in'], 'int': [], 'into': []}
+
+
+

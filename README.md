@@ -17,6 +17,7 @@ Radix sort algorithm has been included in the src directory and demonstrates bes
 =======
 
 An implementation of a Trie can be found in the src directory.  This Trie has the insert and contains methods and only accepts strings as input.  The Trie's traverse method is a generator that returns all of the words in the Trie.
+It also contains an autocomplete method which returns a list of suggested words in the Trie based on a given input as if it were typed 1 character at a time.
 
 
 Sources:

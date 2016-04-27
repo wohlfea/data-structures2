@@ -183,4 +183,35 @@ def test_autocomplete2(full_trie):
     assert autoc == {'i': ['i', 'in'], 'in': ['in'], 'int': [], 'into': []}
 
 
+def test_autocomplete_empty(full_trie):
+    assert full_trie.autocomplete('') == {}
 
+
+def test_autocomplete_numbers(full_trie):
+    with pytest.raises(TypeError):
+        assert full_trie.autocomplete(123) == {}
+
+
+def test_autocomplete_bad_word(full_trie):
+    assert full_trie.autocomplete('zebra') == {'z': [], 'ze': [], 'zeb': [],
+                                               'zebr': [], 'zebra': []}
+
+
+def test_autocomplete_single_letter(full_trie):
+    autoc = full_trie.autocomplete('t')
+    for key in autoc.keys():
+        autoc[key] = sorted(autoc[key])
+    assert autoc == {'t': ['trie', 'trip']}
+
+
+def test_autocomplete_single_letter_limited(full_trie):
+    full_trie.insert('trick')
+    full_trie.insert('trump')
+    full_trie.insert('triumph')
+    full_trie.insert('truth')
+    full_trie.insert('tubers')
+    autoc = full_trie.autocomplete('tr')
+    for key in autoc.keys():
+        autoc[key] = sorted(autoc[key])
+    assert autoc == {'t': ['trick', 'trie', 'trip', 'triumph'],
+                     'tr': ['trick', 'trie', 'trip', 'triumph']}

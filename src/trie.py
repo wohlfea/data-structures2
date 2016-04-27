@@ -45,14 +45,11 @@ class Trie(object):
     def autocomplete(self, token):
         """Return up to 4 suggested words based on input."""
         output = {}
-        # import pdb; pdb.set_trace()
         for idx, char in enumerate(token):
             search = token[:idx + 1]
-            cur = self._get_key_value(search)
-            generator = self.traversal(cur, search)
-
-            output[search] = list(itertools.islice(generator, 4))
+            output[search] = []
+            curs = self._get_key_value(search)
+            if curs:
+                generator = self.traversal(curs, search)
+                output[search] = list(itertools.islice(generator, 4))
         return output
-
-
-

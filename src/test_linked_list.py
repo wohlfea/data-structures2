@@ -134,3 +134,50 @@ def test_set_next():
     new_node = Node("word", "chimichanga")
     new_node.set_next("next")
     assert new_node.get_next() == "next"
+
+
+def test_reversal_first():
+    """Test populated Linked List can be reversed properly."""
+    from linked_list import LinkedList
+    new_list = LinkedList()
+    new_list.insert([x for x in range(1, 11)])
+    assert new_list.display() == '(10, 9, 8, 7, 6, 5, 4, 3, 2, 1)'
+    new_list.reverse()
+    assert new_list.display() == '(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)'
+
+
+def test_reversal_tens():
+    """Test populated LinkedList can be reversed using increments of tens."""
+    from linked_list import LinkedList
+    new_list = LinkedList()
+    new_list.insert([x for x in range(1, 101) if not x % 10])
+    assert new_list.display() == '(100, 90, 80, 70, 60, 50, 40, 30, 20, 10)'
+    new_list.reverse()
+    assert new_list.display() == '(10, 20, 30, 40, 50, 60, 70, 80, 90, 100)'
+
+
+def test_reversal_empty():
+    """Test reversing an empty list doesn't matter."""
+    from linked_list import LinkedList
+    new_list = LinkedList()
+    new_list.reverse()
+    assert new_list.display() == '()'
+
+
+def test_reversal_one_number():
+    """Test no errors arise when reversing a list of one item."""
+    from linked_list import LinkedList
+    new_list = LinkedList()
+    new_list.insert(5)
+    new_list.reverse()
+    assert new_list.display() == '(5)'
+    assert new_list.size() == 1
+
+
+def test_reversal_two():
+    """Test no errors arise when reversing a list of 2 items."""
+    from linked_list import LinkedList
+    new_list = LinkedList([5, 20])
+    assert new_list.display() == '(20, 5)'
+    new_list.reverse()
+    assert new_list.display() == '(5, 20)'

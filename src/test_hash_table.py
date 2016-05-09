@@ -3,13 +3,13 @@ import pytest
 import io
 
 
-
 @pytest.fixture()
 def hash_table_20():
     """Fixture that makes a hash table with 20 buckets."""
     from hash_table import HashTable
     ht = HashTable(20)
     return ht
+
 
 @pytest.fixture()
 def big_table():
@@ -65,8 +65,3 @@ def words_table():
     for word in get_words():
         big_table.set(str(word), str(word))
     return big_table
-
-
-def test_get_dict_words(words_table):
-    for word in get_words():
-        assert words_table.get(str(word)) == str(word)

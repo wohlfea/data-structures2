@@ -1,5 +1,4 @@
 # _*_ encoding: utf-8 _*_
-"""Demonstrate linked list in python."""
 
 
 class LinkedList(object):
@@ -77,6 +76,14 @@ class LinkedList(object):
         printable = '(' + output[:-2] + ')'
         print(printable)
         return printable
+
+    def reverse(self):
+        """Reverse the linked list."""
+        prev = self._mark
+        cur = self.head
+        while cur is not self._mark:
+            prev, cur.next_node, cur = cur, prev, cur.next_node
+        self.head = prev
 
 
 class Node(object):

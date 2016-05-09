@@ -202,16 +202,3 @@ def test_autocomplete_single_letter(full_trie):
     for key in autoc.keys():
         autoc[key] = sorted(autoc[key])
     assert autoc == {'t': ['trie', 'trip']}
-
-
-def test_autocomplete_single_letter_limited(full_trie):
-    full_trie.insert('trick')
-    full_trie.insert('trump')
-    full_trie.insert('triumph')
-    full_trie.insert('truth')
-    full_trie.insert('tubers')
-    autoc = full_trie.autocomplete('tr')
-    for key in autoc.keys():
-        autoc[key] = sorted(autoc[key])
-    assert autoc == {'t': ['trick', 'trie', 'trip', 'triumph'],
-                     'tr': ['trick', 'trie', 'trip', 'triumph']}

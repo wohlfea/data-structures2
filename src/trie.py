@@ -1,5 +1,5 @@
 # _*_ encoding: utf-8 _*_
-
+import itertools
 
 class Trie(object):
     """Create a Trie."""
@@ -17,16 +17,20 @@ class Trie(object):
 
     def contains(self, token):
         """Check if word is in the Trie."""
+        return bool(self._get_key_value(token, '$'))
+
+    def _get_key_value(self, token, limiter=''):
+        """Return word if in Trie."""
         if not token or not isinstance(token, str):
-            return False
+            return
         cur = self.root
-        token += '$'
+        token += limiter
         for letter in token:
             try:
                 cur = cur[letter]
             except KeyError:
-                return False
-        return True
+                return
+        return cur
 
     def traversal(self, start=None, word=''):
         """Generator that yields all the words in the Trie."""
@@ -37,3 +41,15 @@ class Trie(object):
             else:
                 for thing in self.traversal(start[key], word + key):
                     yield thing
+
+    def autocomplete(self, token):
+        """Return up to 4 suggested words based on input."""
+        output = {}
+        for idx, char in enumerate(token):
+            search = token[:idx + 1]
+            output[search] = []
+            curs = self._get_key_value(search)
+            if curs:
+                generator = self.traversal(curs, search)
+                output[search] = list(itertools.islice(generator, 4))
+        return output

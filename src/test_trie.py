@@ -142,7 +142,7 @@ def test_small_traversal():
     my_trie.insert('word')
     my_trie.insert('worldly')
     my_trie.insert('otherword')
-    assert [x for x in my_trie.traversal()] == ['otherword', 'word', 'worldly']
+    assert sorted([x for x in my_trie.traversal()]) == ['otherword', 'word', 'worldly']
 
 
 def test_large_traversal(full_trie):
@@ -167,3 +167,51 @@ def test_single_apostrophe():
     single = Trie()
     single.insert('don\'t')
     assert [x for x in single.traversal()] == ['don\'t']
+
+
+def test_autocomplete(full_trie):
+    autoc = full_trie.autocomplete('in')
+    for key in autoc.keys():
+        autoc[key] = sorted(autoc[key])
+    assert autoc == {'i': ['i', 'in'], 'in': ['in']}
+
+
+def test_autocomplete2(full_trie):
+    autoc = full_trie.autocomplete('into')
+    for key in autoc.keys():
+        autoc[key] = sorted(autoc[key])
+    assert autoc == {'i': ['i', 'in'], 'in': ['in'], 'int': [], 'into': []}
+
+
+def test_autocomplete_empty(full_trie):
+    assert full_trie.autocomplete('') == {}
+
+
+def test_autocomplete_numbers(full_trie):
+    with pytest.raises(TypeError):
+        assert full_trie.autocomplete(123) == {}
+
+
+def test_autocomplete_bad_word(full_trie):
+    assert full_trie.autocomplete('zebra') == {'z': [], 'ze': [], 'zeb': [],
+                                               'zebr': [], 'zebra': []}
+
+
+def test_autocomplete_single_letter(full_trie):
+    autoc = full_trie.autocomplete('t')
+    for key in autoc.keys():
+        autoc[key] = sorted(autoc[key])
+    assert autoc == {'t': ['trie', 'trip']}
+
+
+def test_autocomplete_single_letter_limited(full_trie):
+    full_trie.insert('trick')
+    full_trie.insert('trump')
+    full_trie.insert('triumph')
+    full_trie.insert('truth')
+    full_trie.insert('tubers')
+    autoc = full_trie.autocomplete('tr')
+    for key in autoc.keys():
+        autoc[key] = sorted(autoc[key])
+    assert autoc == {'t': ['trick', 'trie', 'trip', 'triumph'],
+                     'tr': ['trick', 'trie', 'trip', 'triumph']}
